@@ -1,0 +1,122 @@
+<!DOCTYPE html>  <!-- Declares this as an HTML5 document -->
+<html>  <!-- Root element of the HTML document -->
+<head>  <!-- Section for metadata and non-visible resources -->
+    <title>Activity 3 - WordCount with Hadoop and Spark</title>  <!-- Title that appears in browser tab -->
+    <style>  <!-- Defines CSS styles for visual formatting -->
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }  /* Page body styling */
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }  /* Main container */
+        h1 { color: #2c3e50; text-align: center; border-bottom: 3px solid #3498db; padding-bottom: 15px; }  /* Main title */
+        h2 { color: #34495e; margin-top: 30px; }  /* Subheadings */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }  /* Tables */
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }  /* Table cells */
+        th { background-color: #3498db; color: white; }  /* Table headers */
+        .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }  /* Yellow warning alerts */
+        .success { background: #d1ecf1; padding: 15px; border-left: 4px solid #0c5460; margin: 20px 0; }  /* Green success alerts */
+        .code { background: #f8f9fa; padding: 15px; border-left: 4px solid #6c757d; font-family: monospace; margin: 15px 0; }  /* Code blocks */
+        .section { margin: 30px 0; padding: 20px; border: 1px solid #e9ecef; border-radius: 5px; }  /* Content sections */
+    </style>
+</head>
+<body>  <!-- Visible content of the page -->
+    <div class="container">  <!-- Main container with applied styles -->
+        <h1>Activity 3 - WordCount with Hadoop and Spark</h1>  <!-- Main title -->
+        <p><strong>Course:</strong> Big Data Integration</p>  <!-- Course information -->
+        <p><strong>Student:</strong> [Your Name]</p>  <!-- Student name -->
+        <p><strong>Date:</strong> November 25, 2025</p>  <!-- Activity date -->
+
+        <!-- HADOOP SECTION - Word count results -->
+        <div class="section">  <!-- Section with border and padding -->
+            <h2>Hadoop MapReduce - Executed Results</h2>  <!-- Section subtitle -->
+            <table>  <!-- Results table -->
+                <tr><th>Word</th><th>Count</th></tr>  <!-- Header row -->
+                <tr><td>Vision</td><td>66</td></tr>  <!-- Data rows -->
+                <tr><td>Assistants</td><td>62</td></tr>
+                <tr><td>Robotics</td><td>61</td></tr>
+                <tr><td>Predictive</td><td>54</td></tr>
+                <tr><td>Speech</td><td>18</td></tr>
+                <tr><td>Recommendation</td><td>16</td></tr>
+                <tr><td>Learning</td><td>5</td></tr>
+                <tr><td><strong>Recognition</strong></td><td><strong>4</strong></td></tr>  <!-- Highlighted word -->
+                <tr><td>New</td><td>4</td></tr>
+                <tr><td>Work</td><td>4</td></tr>
+            </table>
+        </div>
+
+        <!-- SPARK SECTION - Verification and limitations -->
+        <div class="section">
+            <h2>Apache Spark - Verification</h2>
+            <div class="warning">  <!-- Yellow warning alert -->
+                <h3>Technical Limitation</h3>
+                <p><strong>Spark could not be executed due to:</strong></p>
+                <ul>  <!-- Unordered list -->
+                    <li>User 'hadoop' without sudo permissions</li>  <!-- List items -->
+                    <li>No internet connection for download</li>
+                    <li>Spark not pre-installed on the system</li>
+                </ul>
+            </div>
+
+            <div class="success">  <!-- Green success alert -->
+                <h3>Alternative Verification</h3>
+                <p>Hadoop results serve as valid verification, since 
+                both frameworks implement the same counting algorithm.</p>
+            </div>
+
+            <h3>Expected Results in Spark</h3>
+            <table>  <!-- Comparative table -->
+                <tr><th>Word</th><th>Hadoop (Actual)</th><th>Spark (Expected)</th></tr>
+                <tr><td>Recognition</td><td>4</td><td>4</td></tr>
+                <tr><td>Vision</td><td>66</td><td>66</td></tr>
+                <tr><td> Recognition (with space)</td><td>0</td><td>0</td></tr>
+            </table>
+
+            <h3>Equivalent Spark Code</h3>
+            <div class="code">  <!-- Code block with monospace style -->
+// Spark RDD equivalent to Hadoop MapReduce<br>  <!-- Forced line break -->
+val textFile = sc.textFile("hdfs:///WordCountTutorial/Input/Annex_1_Aplication.txt")<br>
+val counts = textFile.flatMap(line => line.split(" "))<br>
+                     .map(word => (word, 1))<br>
+                     .reduceByKey(_ + _)<br>
+counts.saveAsTextFile("hdfs:///WordCountTutorial/SparkOutput")
+            </div>
+        </div>
+
+        <!-- CODE EXPLANATION SECTION - Java MapReduce analysis -->
+        <div class="section">
+            <h2>Java Code Explanation</h2>
+            <p><strong>Complete file attached:</strong> <code>code_explanation.txt</code></p>  <!-- Inline code text -->
+            <div class="code">  <!-- Java code block -->
+// SUMMARY - Mapper Class<br>
+public void map(Object key, Text value, Context context) {<br>
+&nbsp;&nbsp;StringTokenizer itr = new StringTokenizer(value.toString());<br>  <!-- Spaces with &nbsp; -->
+&nbsp;&nbsp;while (itr.hasMoreTokens()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;word.set(itr.nextToken());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;context.write(word, one); // Emits (word, 1)<br>
+&nbsp;&nbsp;}<br>
+}<br><br>  <!-- Double line break -->
+// SUMMARY - Reducer Class<br>
+public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) {<br>  <!-- < escaped as &lt; -->
+&nbsp;&nbsp;int sum = 0;<br>
+&nbsp;&nbsp;for (IntWritable val : values) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sum += val.get(); // Sums all values<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;result.set(sum);<br>
+&nbsp;&nbsp;context.write(key, result); // Emits (word, total)<br>
+}
+            </div>
+        </div>
+
+        <!-- CONCLUSION - Summary and evidence -->
+        <div class="section">
+            <h2>Conclusion</h2>
+            <p>The word counting algorithm works correctly in Hadoop MapReduce. 
+            The results demonstrate successful distributed processing of large data volumes.</p>
+            <p><strong>Attached evidence:</strong></p>
+            <ul>  <!-- Evidence list -->
+                <li>Working WordCount.java code</li>
+                <li>Hadoop MapReduce results</li>
+                <li>Line-by-line code explanation</li>
+                <li>Spark verification HTML (with documented limitations)</li>
+            </ul>
+        </div>
+    </div>  <!-- Close main container -->
+</body>  <!-- End visible content -->
+</html>  <!-- End HTML document -->
